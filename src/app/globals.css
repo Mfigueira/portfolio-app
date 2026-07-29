@@ -1,0 +1,233 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Design tokens. Contrast ratios against --color-bg were checked, not guessed:
+   text 16.9:1 · muted 7.6:1 · faint 4.7:1 · accent 15.1:1
+   --------------------------------------------------------------------------- */
+@theme {
+  --color-bg: #0a0a0c;
+  --color-surface: #121216;
+  --color-surface-raised: #17171c;
+  --color-text: #ededf0;
+  --color-muted: #a0a0aa;
+  --color-faint: #7a7a85;
+  --color-accent: #e8e0d2;
+
+  --color-line: rgba(255, 255, 255, 0.08);
+  --color-line-strong: rgba(255, 255, 255, 0.14);
+
+  --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+
+  --ease-entrance: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-state: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-bg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Anchored headings must clear the sticky header. */
+  [id] {
+    scroll-margin-top: 6rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Showpiece 1 — hero entrance.
+   Each line rises out of a clipping mask. The <h1> is the LCP element, so it
+   runs first with no delay and a shorter duration: an element sitting at
+   opacity 0 does not count as painted, and a naive fade would inflate LCP.
+   --------------------------------------------------------------------------- */
+@keyframes rise {
+  from {
+    transform: translate3d(0, 110%, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes rise-soft {
+  from {
+    transform: translate3d(0, 14px, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+.reveal-mask {
+  overflow: hidden;
+  /* Descenders would otherwise be clipped by the mask. */
+  padding-bottom: 1em;
+  margin-bottom: -1em;
+}
+
+.reveal {
+  animation: rise 650ms var(--ease-entrance) both;
+}
+
+.reveal-lcp {
+  animation: rise 350ms var(--ease-entrance) both;
+}
+
+/* Used for anything containing a focusable element. A clipping mask would crop
+   the focus ring, so these lines rise a short distance without being masked. */
+.reveal-soft {
+  animation: rise-soft 650ms var(--ease-entrance) both;
+}
+
+/* ---------------------------------------------------------------------------
+   Showpiece 2 — pointer-tracked card lighting.
+   Light is confined to the 1px border via two masks composited with exclude,
+   rather than smeared across the card surface. --mx/--my are written by the
+   Spotlight client component; everything visual happens here.
+   --------------------------------------------------------------------------- */
+.spotlight {
+  position: relative;
+  isolation: isolate;
+}
+
+.spotlight::before,
+.spotlight::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: var(--glow, 0);
+  transition: opacity 300ms var(--ease-state);
+}
+
+/* The illuminated edge. */
+.spotlight::before {
+  padding: 1px;
+  background: radial-gradient(
+    260px circle at var(--mx, 50%) var(--my, 0%),
+    var(--color-accent),
+    transparent 70%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  z-index: 1;
+}
+
+/* A barely-there wash so the edge reads as light rather than as a stroke. */
+.spotlight::after {
+  background: radial-gradient(
+    340px circle at var(--mx, 50%) var(--my, 0%),
+    rgba(232, 224, 210, 0.045),
+    transparent 65%
+  );
+  z-index: 0;
+}
+
+/* Keyboard parity: a static illuminated edge, no tracking. */
+.spotlight:focus-within::before {
+  opacity: 1;
+  background: radial-gradient(
+    340px circle at 50% 0%,
+    var(--color-accent),
+    transparent 70%
+  );
+}
+
+/* Touch devices ship nothing: the component never attaches listeners, and the
+   effect is hidden so a stale --glow can never leave a card lit. */
+@media (hover: none), (pointer: coarse) {
+  .spotlight::before,
+  .spotlight::after {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Underline that draws in from the left, rather than appearing all at once.
+   --------------------------------------------------------------------------- */
+.link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 calc(100% - 1px);
+  background-repeat: no-repeat;
+  transition: background-size 260ms var(--ease-entrance);
+}
+
+.link-underline:hover,
+.link-underline:focus-visible {
+  background-size: 100% 1px;
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced motion: content renders in its final state, tracking is inert.
+   --------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal,
+  .reveal-lcp,
+  .reveal-soft {
+    animation: none;
+  }
+
+  .spotlight::before,
+  .spotlight::after {
+    transition: none;
+  }
+
+  .spotlight::before {
+    background: radial-gradient(
+      340px circle at 50% 0%,
+      var(--color-accent),
+      transparent 70%
+    );
+  }
+
+  .spotlight::after {
+    display: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
