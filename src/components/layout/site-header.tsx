@@ -7,7 +7,7 @@ import { cn } from "@/lib/cn";
 
 const links = [
   { href: "#work", label: "Work" },
-  { href: "#about", label: "About" },
+  // { href: "#about", label: "About" },
   { href: "#contact", label: "Contact" },
 ];
 
@@ -37,7 +37,7 @@ export function SiteHeader() {
         className={cn(
           "sticky top-0 z-50 transition-colors duration-300",
           scrolled
-            ? "border-b border-line bg-bg/70 backdrop-blur-md supports-[not(backdrop-filter:blur(0))]:bg-bg"
+            ? "border-line bg-bg/70 supports-[not(backdrop-filter:blur(0))]:bg-bg border-b backdrop-blur-md"
             : "border-b border-transparent",
         )}
       >
@@ -45,7 +45,7 @@ export function SiteHeader() {
           <nav aria-label="Primary" className="flex h-16 items-center justify-between">
             <a
               href="#top"
-              className="font-serif text-xl leading-none tracking-tight text-text transition-colors duration-150 hover:text-accent"
+              className="text-text hover:text-accent font-serif text-xl leading-none tracking-tight transition-colors duration-150"
             >
               <span aria-hidden>{site.initials}</span>
               <span className="sr-only">{site.name} — back to top</span>
@@ -56,7 +56,7 @@ export function SiteHeader() {
                 <li key={link.href}>
                   <a
                     href={link.href}
-                    className="link-underline font-mono text-xs tracking-[0.08em] text-muted transition-colors duration-150 hover:text-text sm:text-[0.8125rem]"
+                    className="link-underline text-muted hover:text-text font-mono text-xs tracking-[0.08em] transition-colors duration-150 sm:text-[0.8125rem]"
                   >
                     {link.label}
                   </a>

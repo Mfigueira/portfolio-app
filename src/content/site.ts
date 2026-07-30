@@ -6,7 +6,7 @@ export const site = {
   // TODO: replace — placeholder hero copy, pending final wording.
   role: "Full-Stack Software Engineer. Eight years building web and Web3 products.",
   subtext:
-    "Skilled at delivering features end-to-end while collaborating closely with product, design and engineering. Thrives in remote, distributed teams and brings a strong attention to detail to every project.",
+    "Skilled at delivering solutions while collaborating closely with product, design and engineering. Thrives in remote, distributed teams and brings a strong attention to detail to every project.",
 
   seoTitle: "Manuel Figueira — Full-Stack Software Engineer",
   seoDescription:
