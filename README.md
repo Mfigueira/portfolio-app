@@ -32,14 +32,14 @@ Longer reasoning lives in [`docs/`](#documentation).
 
 ## Stack
 
-| | |
-|---|---|
-| Framework | Next.js 16 (App Router, Turbopack) |
-| UI | React 19 |
-| Language | TypeScript, `strict` plus `noUncheckedIndexedAccess` |
-| Styling | Tailwind CSS 4, CSS-first `@theme` tokens |
-| Fonts | Instrument Serif, Instrument Sans, Geist Mono via `next/font` |
-| Hosting | Vercel |
+|           |                                                               |
+| --------- | ------------------------------------------------------------- |
+| Framework | Next.js 16 (App Router, Turbopack)                            |
+| UI        | React 19                                                      |
+| Language  | TypeScript, `strict` plus `noUncheckedIndexedAccess`          |
+| Styling   | Tailwind CSS 4, CSS-first `@theme` tokens                     |
+| Fonts     | Instrument Serif, Instrument Sans, Geist Mono via `next/font` |
+| Hosting   | Vercel                                                        |
 
 **Runtime dependencies: `next`, `react`, `react-dom`. That is the whole list.** No animation
 library, no UI kit, no icon package, no state management. The two interactions are CSS plus
@@ -53,14 +53,14 @@ npm install
 npm run dev          # http://localhost:3000
 ```
 
-| Script | Purpose |
-|--------|---------|
-| `npm run dev` | Development server |
-| `npm run build` | Production build |
-| `npm start` | Serve the production build |
-| `npm run lint` | ESLint |
-| `npm run typecheck` | `tsc --noEmit` |
-| `npm run format` | Prettier, with Tailwind class sorting |
+| Script              | Purpose                               |
+| ------------------- | ------------------------------------- |
+| `npm run dev`       | Development server                    |
+| `npm run build`     | Production build                      |
+| `npm start`         | Serve the production build            |
+| `npm run lint`      | ESLint                                |
+| `npm run typecheck` | `tsc --noEmit`                        |
+| `npm run format`    | Prettier, with Tailwind class sorting |
 
 ## Project structure
 
@@ -74,7 +74,7 @@ src/
 │   └── icon.svg  robots.ts  sitemap.ts
 ├── components/
 │   ├── layout/               Container, Section, SkipLink, header, footer
-│   ├── sections/             Hero, Work, About, Skills
+│   ├── sections/             Hero, Projects, About, Skills
 │   └── ui/                   ProjectCard, Spotlight, icons
 ├── content/                  All copy and data — the only files to edit
 ├── lib/                      cn()
@@ -136,12 +136,12 @@ muted, 4.7:1 for the faintest tier, all against the actual background.
 
 Every route prerenders static. Measured on a clean production build:
 
-| | |
-|---|---|
-| First-load JS, modern browsers | 143 kB gzipped |
-| — of which is this site's own code | ~1.8 kB |
-| CSS | 6.4 kB gzipped |
-| HTML | 7.9 kB gzipped |
+|                                    |                |
+| ---------------------------------- | -------------- |
+| First-load JS, modern browsers     | 143 kB gzipped |
+| — of which is this site's own code | ~1.8 kB        |
+| CSS                                | 6.4 kB gzipped |
+| HTML                               | 7.9 kB gzipped |
 
 Almost all of that 143 kB is React and the App Router client runtime, which ship whether or
 not a site uses them.
@@ -151,7 +151,7 @@ not a site uses them.
 - Scaffold, tooling, strict TypeScript, ESLint, Prettier — builds, lints and typechecks clean
 - Design system: tokens, three-role typography, verified contrast
 - Hero with the entrance sequence
-- Work section: three cards from typed content, with pointer-tracked lighting
+- Projects section: three cards from typed content, with pointer-tracked lighting
 - About, Skills (four groups, 2×2), Contact merged into the footer
 - SEO: metadata, canonical URL, `Person` JSON-LD, generated OG image, sitemap, robots
 - Responsive from 375 px up, verified with no horizontal overflow at any width
@@ -164,7 +164,7 @@ not a site uses them.
   degrades gracefully; this does not.
 - **Hero role line and subtext are placeholders.** `src/content/site.ts`.
 - **Two of three projects are placeholders.** `src/content/projects.ts`. Until they exist,
-  the ZetaChain card carries the whole Work section.
+  the ZetaChain card carries the whole Projects section.
 
 **Before launch:**
 
@@ -192,10 +192,10 @@ The full checklist is in [`docs/BUILD_PLAN.md`](docs/BUILD_PLAN.md).
 
 Planning documents written before the build, kept as a record of the reasoning:
 
-| Document | Contents |
-|----------|----------|
-| [`PROJECT_OVERVIEW.md`](docs/PROJECT_OVERVIEW.md) | Concept, audience, goals, risks |
-| [`SITE_STRUCTURE.md`](docs/SITE_STRUCTURE.md) | Sitemap and per-section content plan |
-| [`TECH_PLAN.md`](docs/TECH_PLAN.md) | Architecture, the animation-library tradeoff, measured budgets |
-| [`DESIGN_NOTES.md`](docs/DESIGN_NOTES.md) | Typography, palette, spacing, interaction specs |
-| [`BUILD_PLAN.md`](docs/BUILD_PLAN.md) | Milestones, status, remaining checklist |
+| Document                                          | Contents                                                       |
+| ------------------------------------------------- | -------------------------------------------------------------- |
+| [`PROJECT_OVERVIEW.md`](docs/PROJECT_OVERVIEW.md) | Concept, audience, goals, risks                                |
+| [`SITE_STRUCTURE.md`](docs/SITE_STRUCTURE.md)     | Sitemap and per-section content plan                           |
+| [`TECH_PLAN.md`](docs/TECH_PLAN.md)               | Architecture, the animation-library tradeoff, measured budgets |
+| [`DESIGN_NOTES.md`](docs/DESIGN_NOTES.md)         | Typography, palette, spacing, interaction specs                |
+| [`BUILD_PLAN.md`](docs/BUILD_PLAN.md)             | Milestones, status, remaining checklist                        |

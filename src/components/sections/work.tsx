@@ -4,7 +4,7 @@ import { projects } from "@/content/projects";
 
 export function Work() {
   return (
-    <Section id="work" heading="Work">
+    <Section id="projects" heading="Projects">
       <ul className="flex flex-col gap-4">
         {projects.map((project, index) => (
           <li key={project.title}>

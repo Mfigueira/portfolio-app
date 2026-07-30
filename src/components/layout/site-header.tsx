@@ -6,7 +6,7 @@ import { site } from "@/content/site";
 import { cn } from "@/lib/cn";
 
 const links = [
-  { href: "#work", label: "Work" },
+  { href: "#projects", label: "Projects" },
   // { href: "#about", label: "About" },
   { href: "#contact", label: "Contact" },
 ];

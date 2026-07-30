@@ -60,14 +60,14 @@ for indices and tech tags.
 
 **Role assignment — the rule is one face per job, no exceptions:**
 
-| Face | Used for | Never used for |
-|------|----------|----------------|
-| Instrument Serif | The `<h1>` name, section headings (`<h2>`), the `MF` wordmark | Body copy, buttons, anything below ~24px |
-| Instrument Sans | Role line, subtext, all prose, project titles and pitches, nav, buttons | Headings, meta |
-| Geist Mono | Project indices `01/02/03`, tech tags, section eyebrows, skill items | Anything longer than four or five words |
+| Face             | Used for                                                                | Never used for                           |
+| ---------------- | ----------------------------------------------------------------------- | ---------------------------------------- |
+| Instrument Serif | The `<h1>` name, section headings (`<h2>`), the `MF` wordmark           | Body copy, buttons, anything below ~24px |
+| Instrument Sans  | Role line, subtext, all prose, project titles and pitches, nav, buttons | Headings, meta                           |
+| Geist Mono       | Project indices `01/02/03`, tech tags, section eyebrows, skill items    | Anything longer than four or five words  |
 
 The mono is doing a lot of small-text work, which is deliberate: monospace at 13px reads as
-*technical annotation*, and it lets the tags and indices sit quietly at low contrast without
+_technical annotation_, and it lets the tags and indices sit quietly at low contrast without
 looking like an afterthought.
 
 ### Scale and treatment (applies to whichever option is chosen)
@@ -94,17 +94,17 @@ lightness plus hairline borders, never by drop shadows.
 Working palette (values are a starting point; each will be verified with a contrast checker
 in M2 and adjusted rather than assumed):
 
-| Token | Value | Use |
-|-------|-------|-----|
-| `--bg` | `#0A0A0C` | Page background |
-| `--surface` | `#121216` | Cards, header when scrolled |
-| `--surface-raised` | `#17171C` | Hover state of a card |
-| `--border` | `rgba(255,255,255,0.08)` | Hairline dividers and card edges |
-| `--border-strong` | `rgba(255,255,255,0.14)` | Hover/focus edges |
-| `--text` | `#EDEDF0` | Primary text — off-white, never `#fff` |
-| `--text-muted` | `#A0A0AA` | Secondary prose, subtext |
-| `--text-faint` | `#7A7A85` | Meta, tags, indices — tuned up until it clears 4.5:1 on `--bg` |
-| `--accent` | see below | Links, focus rings, spotlight tint |
+| Token              | Value                    | Use                                                            |
+| ------------------ | ------------------------ | -------------------------------------------------------------- |
+| `--bg`             | `#0A0A0C`                | Page background                                                |
+| `--surface`        | `#121216`                | Cards, header when scrolled                                    |
+| `--surface-raised` | `#17171C`                | Hover state of a card                                          |
+| `--border`         | `rgba(255,255,255,0.08)` | Hairline dividers and card edges                               |
+| `--border-strong`  | `rgba(255,255,255,0.14)` | Hover/focus edges                                              |
+| `--text`           | `#EDEDF0`                | Primary text — off-white, never `#fff`                         |
+| `--text-muted`     | `#A0A0AA`                | Secondary prose, subtext                                       |
+| `--text-faint`     | `#7A7A85`                | Meta, tags, indices — tuned up until it clears 4.5:1 on `--bg` |
+| `--accent`         | see below                | Links, focus rings, spotlight tint                             |
 
 ### Accent
 
@@ -119,7 +119,7 @@ It is the focus-ring color, the hover color for links, the tint of the pointer h
 and the selection color. It appears nowhere else at full strength.
 
 One consequence to watch: a warm near-white accent sits close in lightness to `--text`, so
-it cannot be the *only* thing distinguishing an interactive element from static text. Links
+it cannot be the _only_ thing distinguishing an interactive element from static text. Links
 therefore always carry a second cue — an underline, an arrow, or a border — which is a
 WCAG requirement regardless, but here it is also load-bearing visually.
 
@@ -205,7 +205,7 @@ technical audience notices and most portfolios get wrong.
 
 ## Showpiece 2 — Pointer-tracked project cards
 
-**Where:** the three cards in the Work section.
+**Where:** the three cards in the Projects section.
 
 **What happens:** as the pointer moves across a card, a soft radial highlight tracks it —
 rendered primarily **on the card's border** rather than as a blob on the surface. The card's

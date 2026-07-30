@@ -26,10 +26,10 @@ export function Hero() {
 
         <div className="reveal-soft mt-10 flex flex-wrap items-center gap-3 [animation-delay:260ms]">
           <a
-            href="#work"
+            href="#projects"
             className="bg-accent text-bg rounded-full px-5 py-2.5 text-sm font-medium transition-opacity duration-150 hover:opacity-85"
           >
-            View work
+            View projects
           </a>
           <a
             href={site.social.linkedin}

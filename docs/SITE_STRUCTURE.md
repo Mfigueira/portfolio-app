@@ -22,9 +22,9 @@ new tab with `rel="noopener noreferrer"`.
 
 ## Page order and rationale
 
-Hero → Work → About → Skills → Contact.
+Hero → Projects → About → Skills → Contact.
 
-Work sits directly under the hero because it is the reason an engineer opened the page, and
+Projects sits directly under the hero because it is the reason an engineer opened the page, and
 because a recruiter skimming on mobile should hit evidence before biography. About is
 deliberately after the projects: the work argues for itself first, the résumé context
 supports it second. Skills follow About because they read as an index of the work above
@@ -34,7 +34,7 @@ header.
 ## Navigation
 
 A slim sticky header: the wordmark **MF** on the left (confirmed: initials), linking to top,
-and three anchor links on the right — Work, About, Contact. The wordmark is set in the
+and three anchor links on the right — Projects, About, Contact. The wordmark is set in the
 display serif and carries an accessible name of "Manuel Figueira — back to top" so the two
 letters are not the only thing a screen reader announces. Skills is intentionally omitted
 from the nav; four items is one too many for a page this short, and Skills is adjacent to
@@ -62,21 +62,21 @@ product landing page: a lot of space, few words, precise type.
 
 **Content:**
 
-| Slot | Content | Notes |
-|------|---------|-------|
-| Eyebrow | **None** (confirmed) | The hero opens directly on the name. |
-| Name | **Manuel Figueira** | The largest type on the page. `<h1>`. |
-| Role line | ✍️ To be written by Manuel | Must not contain the word "frontend" |
-| Subtext | ✍️ To be written by Manuel | ~20–30 words |
-| Actions | `View work` (anchor to `#work`) and `GitHub` (external) | Two actions, one primary one secondary. Nothing else competes. |
+| Slot      | Content                                                 | Notes                                                          |
+| --------- | ------------------------------------------------------- | -------------------------------------------------------------- |
+| Eyebrow   | **None** (confirmed)                                    | The hero opens directly on the name.                           |
+| Name      | **Manuel Figueira**                                     | The largest type on the page. `<h1>`.                          |
+| Role line | ✍️ To be written by Manuel                              | Must not contain the word "frontend"                           |
+| Subtext   | ✍️ To be written by Manuel                              | ~20–30 words                                                   |
+| Actions   | `View work` (anchor to `#work`) and `GitHub` (external) | Two actions, one primary one secondary. Nothing else competes. |
 
 **Constraints for the copy, whatever it ends up saying:**
 
-- *Role line:* one line, ideally under ten words so it never wraps to three lines on a
+- _Role line:_ one line, ideally under ten words so it never wraps to three lines on a
   375px screen. It must contain "full-stack" or an equivalent, and must not contain
   "frontend". It is set in Instrument Sans directly beneath the serif name, so it reads as
   a caption to the name rather than as a second headline.
-- *Subtext:* one or two sentences, 20–35 words. Its job is the thing the role line cannot
+- _Subtext:_ one or two sentences, 20–35 words. Its job is the thing the role line cannot
   say — the specific kind of work, the evidence, or the point of view. If it merely
   restates the role line in more words, it should be cut entirely rather than padded.
 - Both should survive being read in two seconds by someone who will not read anything else
@@ -104,18 +104,18 @@ feel individually considered. Cards are visually numbered `01 / 02 / 03`.
 
 **Per-card anatomy:**
 
-| Element | Detail |
-|---------|--------|
-| Index | `01`, monospace, muted |
-| Title | Project name |
-| Pitch | Exactly two lines of copy — what it is, why it is interesting |
-| Tech tags | 3–5 tags maximum, monospace, low-contrast until hover |
-| Links | `Live` and `Repo` where applicable; each an explicit, individually focusable link |
-| Optional | A one-line role/context note, e.g. "Open-source contribution" |
+| Element   | Detail                                                                            |
+| --------- | --------------------------------------------------------------------------------- |
+| Index     | `01`, monospace, muted                                                            |
+| Title     | Project name                                                                      |
+| Pitch     | Exactly two lines of copy — what it is, why it is interesting                     |
+| Tech tags | 3–5 tags maximum, monospace, low-contrast until hover                             |
+| Links     | `Live` and `Repo` where applicable; each an explicit, individually focusable link |
+| Optional  | A one-line role/context note, e.g. "Open-source contribution"                     |
 
 **Card interaction:** pointer-tracked lighting. Specified in DESIGN_NOTES.
 
-**Accessibility note:** the card is *not* one big link. A card-wide anchor wrapping multiple
+**Accessibility note:** the card is _not_ one big link. A card-wide anchor wrapping multiple
 links is invalid and hostile to screen readers. Instead the card is an `<article>`, the
 title contains the primary link, and the whole card surface is made clickable via a
 pseudo-element overlay on that title link — the standard "card link" pattern that keeps one
@@ -145,21 +145,21 @@ tab stop for the primary action and separate ones for secondary links.
 
 - Title: **ZetaChain Documentation**
 - Context line: `Open source · ZetaChain`
-- Pitch (draft): *The public documentation platform for ZetaChain, an open-source Next.js
+- Pitch (draft): _The public documentation platform for ZetaChain, an open-source Next.js
   and Nextra application. I established the repository architecture and hand-built the
-  entire UI layer — cards, navigation, links, and every individual documentation component.*
+  entire UI layer — cards, navigation, links, and every individual documentation component._
 - Tags: `Next.js` `React` `Nextra` `TypeScript` `Tailwind CSS`
 - Links: Live → `https://www.zetachain.com/docs/` · Repo → `https://github.com/zeta-chain/docs`
 - External-link-only by design. No embedded demo, no screenshot mockup.
 
 **Two notes on this card:**
 
-1. *The live site has moved on.* ZetaChain's docs have since been repositioned around their
+1. _The live site has moved on._ ZetaChain's docs have since been repositioned around their
    Anuma product, so the page a visitor lands on today does not reflect the work described.
    The copy above is therefore written to describe the contribution durably — architecture
    and component authorship — rather than pointing at anything currently on screen. It stays
    accurate as the site continues to change.
-2. *No hardcoded repo statistics.* The repository has meaningful traction (hundreds of
+2. _No hardcoded repo statistics._ The repository has meaningful traction (hundreds of
    commits, well over a hundred forks), which is tempting to put on the card. It is not
    going on the card, because a number baked into a static build silently goes stale and a
    wrong number is worse than no number. Fetching it live would mean adding runtime data
@@ -273,21 +273,21 @@ as the rest of the page, not a new one.
 
 ## Content inventory
 
-| Item | Section | Status |
-|------|---------|--------|
-| Full name — Manuel Figueira | Hero, metadata | ✅ |
-| Wordmark — initials, `MF` | Header, icon | ✅ |
-| LinkedIn URL | Contact, metadata | ✅ |
-| GitHub URL | Hero, Contact | ✅ |
-| ZetaChain docs — name, URL, repo, stack, contribution | Work | ✅ |
-| Skills, all four groups | Skills | ✅ |
-| Spoken languages | About | ✅ |
-| Years of experience — 8 | About, metadata | ✅ |
-| Domain — `manufigueira.pro` | Metadata, sitemap, OG | ✅ |
-| No hero eyebrow | Hero | ✅ Decided — open on the name |
-| Web3 as a fourth skills group, 2×2 layout | Skills | ✅ Decided |
-| Role line + subtext | Hero | ⛔️ **Blocks M2** — being written by Manuel |
-| Current / most recent role and company | About | 🔸 Open |
-| About prose | About | 🔸 Lorem ipsum placeholder, must be replaced before launch |
-| Personal project 1 — title, pitch, tags, links | Work | 🔸 Placeholder by design |
-| Personal project 2 — title, pitch, tags, links | Work | 🔸 Placeholder by design |
+| Item                                                  | Section               | Status                                                     |
+| ----------------------------------------------------- | --------------------- | ---------------------------------------------------------- |
+| Full name — Manuel Figueira                           | Hero, metadata        | ✅                                                         |
+| Wordmark — initials, `MF`                             | Header, icon          | ✅                                                         |
+| LinkedIn URL                                          | Contact, metadata     | ✅                                                         |
+| GitHub URL                                            | Hero, Contact         | ✅                                                         |
+| ZetaChain docs — name, URL, repo, stack, contribution | Projects              | ✅                                                         |
+| Skills, all four groups                               | Skills                | ✅                                                         |
+| Spoken languages                                      | About                 | ✅                                                         |
+| Years of experience — 8                               | About, metadata       | ✅                                                         |
+| Domain — `manufigueira.pro`                           | Metadata, sitemap, OG | ✅                                                         |
+| No hero eyebrow                                       | Hero                  | ✅ Decided — open on the name                              |
+| Web3 as a fourth skills group, 2×2 layout             | Skills                | ✅ Decided                                                 |
+| Role line + subtext                                   | Hero                  | ⛔️ **Blocks M2** — being written by Manuel                 |
+| Current / most recent role and company                | About                 | 🔸 Open                                                    |
+| About prose                                           | About                 | 🔸 Lorem ipsum placeholder, must be replaced before launch |
+| Personal project 1 — title, pitch, tags, links        | Projects              | 🔸 Placeholder by design                                   |
+| Personal project 2 — title, pitch, tags, links        | Projects              | 🔸 Placeholder by design                                   |

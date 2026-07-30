@@ -4,26 +4,30 @@ import type { Project } from "@/types/content";
 // to this file only — no component touches required.
 export const projects: readonly Project[] = [
   {
-    // TODO: replace — placeholder for an unbuilt personal project.
-    title: "Personal Project 01",
+    title: "ZetaHub",
+    context: "ZetaChain",
     pitch:
-      "A full-stack web application built end to end — schema, API, and interface. Designed around a single workflow and made fast enough to feel instant.",
-    tags: ["Next.js", "TypeScript", "PostgreSQL", "Prisma"],
-  },
-  {
-    // TODO: replace — placeholder for an unbuilt personal project.
-    title: "Personal Project 02",
-    pitch:
-      "A focused tool that collapses a repetitive manual task into a few keystrokes. Built to be used daily, so interaction cost matters more than feature count.",
-    tags: ["React", "TypeScript", "Node.js", "Redis"],
+      "ZetaHub is the Web3 dApp for the ZetaChain ecosystem—stake, vote, interact with Universal Apps, and earn XP rewards. I contributed as a core product engineer on the team building it.",
+    tags: ["Next.js", "React", "Ethers.js", "TypeScript", "Node.js"],
+    liveUrl: "https://hub.zetachain.com/",
   },
   {
     title: "ZetaChain Documentation",
-    context: "Open source · ZetaChain",
+    context: "ZetaChain",
     pitch:
-      "The public documentation platform for ZetaChain, built on Next.js and Nextra. I set up the repository architecture and hand-built the UI layer, component by component.",
+      "The public documentation platform for ZetaChain, built on Next.js and Nextra. I set up the repository architecture and built the UI layer.",
     tags: ["Next.js", "React", "Nextra", "TypeScript", "Tailwind CSS"],
     liveUrl: "https://www.zetachain.com/docs/",
     repoUrl: "https://github.com/zeta-chain/docs",
+  },
+  {
+    // TODO: replace — placeholder for an unbuilt personal project.
+    title: "Tetris.AI",
+    context: "Personal project",
+    pitch:
+      "A classic Tetris game crafted with React, TypeScript, and Vite, featuring GSAP animations and a built-in AI that can play the game for you. I had a lot of fun building it.",
+    tags: ["React", "TypeScript", "Vite", "GSAP"],
+    liveUrl: "https://mfigueira.github.io/tetris-ai/",
+    repoUrl: "https://github.com/Mfigueira/tetris-ai",
   },
 ];

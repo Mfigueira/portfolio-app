@@ -4,13 +4,13 @@ Milestones were meant to be reviewed one at a time. That gate was waived in orde
 something viewable quickly, so **M1 through M5 were built in a single pass** and are marked
 below with what was actually done rather than what was intended. M6 is untouched.
 
-| Milestone | Status |
-|-----------|--------|
-| M1 — Scaffold and layout shell | ✅ Done |
-| M2 — Design system, hero, entrance animation | ✅ Done |
-| M3 — Project cards with content data | ✅ Done |
-| M4 — Pointer-tracked card interaction | ✅ Done |
-| M5 — About, Skills, Contact | ✅ Done |
+| Milestone                                           | Status         |
+| --------------------------------------------------- | -------------- |
+| M1 — Scaffold and layout shell                      | ✅ Done        |
+| M2 — Design system, hero, entrance animation        | ✅ Done        |
+| M3 — Project cards with content data                | ✅ Done        |
+| M4 — Pointer-tracked card interaction               | ✅ Done        |
+| M5 — About, Skills, Contact                         | ✅ Done        |
 | M6 — Polish: SEO, a11y, performance, responsiveness | ◻️ Not started |
 
 ---
@@ -21,7 +21,7 @@ below with what was actually done rather than what was intended. M6 is untouched
 and footer landmarks.
 
 - Next.js 16.2.12, React 19.2.8, TypeScript strict, Tailwind CSS 4.3.3, all pinned.
-- `create-next-app` could not be used: it probes the *parent* directory for write access and
+- `create-next-app` could not be used: it probes the _parent_ directory for write access and
   the workspace parent is not writable here. Scaffolded by hand instead, which also avoided
   boilerplate that would have been deleted.
 - `tsconfig.json` runs strict plus `noUncheckedIndexedAccess`, `noUnusedLocals`,
@@ -68,7 +68,7 @@ on touch or under reduced motion.
 
 - Light is confined to the card's 1px border using two masks composited with
   `mask-composite: exclude`, plus a 4.5%-opacity surface wash. Verified in the compiled CSS.
-- `Spotlight` is the only interactive component in the Work section; it holds no React state
+- `Spotlight` is the only interactive component in the Projects section; it holds no React state
   and re-renders never. Pointer coordinates are written to `--mx` / `--my` inside a single
   `requestAnimationFrame`, with the layout read batched into the same frame.
 - Listeners are not attached at all when `(hover: hover) and (pointer: fine)` fails or
@@ -128,7 +128,7 @@ on touch or under reduced motion.
 
 **Housekeeping**
 
-- [ ] Initialise git and commit. *(Not done — no repository has been created yet.)*
+- [ ] Initialise git and commit. _(Not done — no repository has been created yet.)_
 - [ ] Deploy to Vercel so every later review happens on a real URL.
 - [ ] Decide on `@vercel/analytics` and `@vercel/speed-insights`.
 
@@ -143,7 +143,7 @@ on touch or under reduced motion.
   deliberately; revisit when Next ships updated transitives.
 - **First-load JS is 143 kB gz, not the 90 kB originally budgeted.** See TECH_PLAN for the
   measurement and why the original number was never achievable.
-- **Two of three projects are placeholders**, so the Work section rests on the ZetaChain
+- **Two of three projects are placeholders**, so the Projects section rests on the ZetaChain
   card until the personal projects exist.
 - **No test suite**, by decision. Lighthouse, axe, and manual keyboard testing are the checks
   that would catch real regressions here.
