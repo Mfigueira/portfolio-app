@@ -55,7 +55,7 @@ export function SiteFooter() {
             </ul>
 
             <p className="mt-20 font-mono text-[0.6875rem] tracking-[0.04em] text-faint">
-              © <CurrentYear fallback={BUILD_YEAR} /> · Crafted by {site.name}
+              © <CurrentYear fallback={BUILD_YEAR} /> {site.name}
             </p>
           </div>
         </div>
