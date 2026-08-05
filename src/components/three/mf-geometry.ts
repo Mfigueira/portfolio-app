@@ -10,6 +10,9 @@ const F_PATH_D =
 
 const GRID_CENTER = 100;
 
+/** Scales the M/F cutout around the grid center; wall extents stay fixed. */
+const MONOGRAM_SCALE = 0.4;
+
 /** Wall extents, sized well beyond the monogram's bounding box (x: -58..57, y: -52..52). */
 const WALL_WIDTH = 900;
 const WALL_HEIGHT = 520;
@@ -22,6 +25,14 @@ function toLocal(x: number, y: number): [number, number] {
   return [x - GRID_CENTER, GRID_CENTER - y];
 }
 
+/** Scales a grid point around the monogram center before mapping to local space. */
+function scaleGridPoint(x: number, y: number): [number, number] {
+  return [
+    GRID_CENTER + (x - GRID_CENTER) * MONOGRAM_SCALE,
+    GRID_CENTER + (y - GRID_CENTER) * MONOGRAM_SCALE,
+  ];
+}
+
 /** Parses one of the fixed "M x y L x y ... Z" strings above into a closed THREE.Path. */
 function pathFromCommands(d: string): THREE.Path {
   const path = new THREE.Path();
@@ -32,12 +43,9 @@ function pathFromCommands(d: string): THREE.Path {
       path.closePath();
       return;
     }
-    const [gridX, gridY] = command
-      .slice(1)
-      .trim()
-      .split(/\s+/)
-      .map(Number);
-    const [x, y] = toLocal(gridX as number, gridY as number);
+    const [gridX, gridY] = command.slice(1).trim().split(/\s+/).map(Number);
+    const [scaledX, scaledY] = scaleGridPoint(gridX as number, gridY as number);
+    const [x, y] = toLocal(scaledX, scaledY);
     if (index === 0) path.moveTo(x, y);
     else path.lineTo(x, y);
   });

@@ -6,7 +6,6 @@ import { Center } from "@react-three/drei";
 import { Bloom, EffectComposer, Noise, Vignette } from "@react-three/postprocessing";
 import { cn } from "@/lib/cn";
 import { buildWallGeometry, WALL_DEPTH } from "@/components/three/mf-geometry";
-import { CameraRig, CAMERA_DISTANCE, CAMERA_FOV } from "@/components/three/camera-rig";
 import { LightRig } from "@/components/three/light-rig";
 
 /** Behind the wall's back face by roughly 4x its thickness — a separate source, not touching it. */
@@ -15,7 +14,7 @@ const LIGHT_Z = -(WALL_DEPTH / 2 + LIGHT_DISTANCE_BEHIND);
 
 /** Close to the page's own --color-bg so the wall reads as an extension of the
  *  hero's darkness rather than a differently-toned card sitting on top of it. */
-const WALL_COLOR = "#0d0d0f";
+const WALL_COLOR = "#0a0a0c";
 
 function Wall() {
   const geometry = useMemo(() => buildWallGeometry(), []);
@@ -46,7 +45,6 @@ function Scene() {
     <>
       <Wall />
       <LightRig z={LIGHT_Z} />
-      <CameraRig />
       <EffectComposer>
         <Bloom luminanceThreshold={0.2} intensity={0.85} radius={0.65} mipmapBlur />
         <Noise opacity={0.1} />
@@ -76,7 +74,7 @@ export function HeroScene({ className }: { className?: string }) {
     <div
       aria-hidden="true"
       className={cn(
-        "transition-opacity duration-2000 ease-out",
+        "transition-opacity duration-1000",
         visible ? "opacity-100" : "opacity-0",
         className,
       )}
@@ -86,10 +84,10 @@ export function HeroScene({ className }: { className?: string }) {
         frameloop="always"
         gl={{ antialias: true, alpha: true }}
         camera={{
-          fov: CAMERA_FOV,
-          near: 1,
-          far: 2000,
-          position: [0, 0, CAMERA_DISTANCE],
+          fov: 15,
+          near: 0.1,
+          far: 1000,
+          position: [0, 0, 300],
         }}
       >
         <Scene />
