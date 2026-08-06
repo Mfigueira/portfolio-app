@@ -11,15 +11,20 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.7.0",
+    "@react-three/postprocessing": "^3.0.4",
     "next": "16.2.12",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "three": "^0.185.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^22.15.3",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.1",
+    "@types/three": "^0.185.3",
     "eslint": "^9.39.1",
     "eslint-config-next": "16.2.12",
     "prettier": "^3.6.2",
