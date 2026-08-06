@@ -1,67 +1,135 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { Canvas } from "@react-three/fiber";
-import { Center } from "@react-three/drei";
-import { Bloom, EffectComposer, Noise, Vignette } from "@react-three/postprocessing";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { cn } from "@/lib/cn";
-import { buildWallGeometry, WALL_DEPTH } from "@/components/three/mf-geometry";
-import { LightRig } from "@/components/three/light-rig";
+import {
+  buildMonogramGeometry,
+  buildMonogramBeamGeometry,
+} from "@/components/three/mf-monogram";
+import type { Group } from "three";
+import * as THREE from "three";
 
-/** Behind the wall's back face by roughly 4x its thickness — a separate source, not touching it. */
-const LIGHT_DISTANCE_BEHIND = WALL_DEPTH * 4;
-const LIGHT_Z = -(WALL_DEPTH / 2 + LIGHT_DISTANCE_BEHIND);
+const COIN_RADIUS = 15;
+const EMBOSS_DEPTH = 0.45;
+const MONOGRAM_COLOR = "#f8f8f8";
+const SPOTLIGHT_COLOR = "#d8d8e0";
 
-/** Close to the page's own --color-bg so the wall reads as an extension of the
- *  hero's darkness rather than a differently-toned card sitting on top of it. */
-const WALL_COLOR = "#0a0a0c";
+/** Mid-gray haze the beam dissolves into along its length. */
+const SCENE_FOG_COLOR = "#505058";
 
-function Wall() {
-  const geometry = useMemo(() => buildWallGeometry(), []);
+const BEAM_LENGTH = 1000;
+
+const ROTATION_Y_MIN = 0;
+const ROTATION_Y_MAX = 0.5;
+const ROTATION_Y_CENTER = (ROTATION_Y_MIN + ROTATION_Y_MAX) / 2;
+const ROTATION_Y_AMPLITUDE = (ROTATION_Y_MAX - ROTATION_Y_MIN) / 2;
+
+const ROTATION_X_MIN = -0.1;
+const ROTATION_X_MAX = 0.1;
+const ROTATION_X_CENTER = (ROTATION_X_MIN + ROTATION_X_MAX) / 2;
+const ROTATION_X_AMPLITUDE = (ROTATION_X_MAX - ROTATION_X_MIN) / 2;
+/** One oscillation cycle in ~16s. */
+const ROTATION_SPEED = Math.PI / 12;
+
+const COIN_LAYOUT = {
+  mobile: { position: [0, 22, 0] as const, scale: 0.5 },
+  desktop: { position: [30, 0, 0] as const, scale: 1 },
+};
+const DESKTOP_BREAKPOINT = "(min-width: 768px)";
+
+function useCoinLayout(): {
+  position: [number, number, number];
+  scale: number;
+} {
+  const [layout, setLayout] = useState({
+    position: [...COIN_LAYOUT.mobile.position] as [number, number, number],
+    scale: COIN_LAYOUT.mobile.scale,
+  });
+
+  useEffect(() => {
+    const mq = window.matchMedia(DESKTOP_BREAKPOINT);
+    const sync = () => {
+      const next = mq.matches ? COIN_LAYOUT.desktop : COIN_LAYOUT.mobile;
+      setLayout({
+        position: [...next.position],
+        scale: next.scale,
+      });
+    };
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  return layout;
+}
+
+function Coin() {
+  const group = useRef<Group>(null);
+  const spotlight = useRef<THREE.Mesh>(null);
+
+  const reducedMotion = useRef(false);
+  const { position, scale } = useCoinLayout();
+  const monogram = useMemo(() => buildMonogramGeometry(COIN_RADIUS, EMBOSS_DEPTH), []);
+  const beam = useMemo(() => buildMonogramBeamGeometry(COIN_RADIUS, BEAM_LENGTH), []);
+
+  useEffect(() => {
+    reducedMotion.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      monogram.dispose();
+      beam.dispose();
+    };
+  }, [monogram, beam]);
+
+  useFrame(({ clock }) => {
+    if (reducedMotion.current || !spotlight.current) return;
+    const t = clock.elapsedTime * ROTATION_SPEED;
+    spotlight.current.rotation.x = ROTATION_X_CENTER + ROTATION_X_AMPLITUDE * Math.sin(t);
+    spotlight.current.rotation.y =
+      ROTATION_Y_CENTER + ROTATION_Y_AMPLITUDE * Math.cos(t * 0.85);
+  });
 
   return (
-    <Center disableZ>
-      <mesh geometry={geometry}>
-        {/* No light in the scene reaches the wall's camera-facing side (the
-            beacon sits behind it), so meshStandardMaterial's `color` alone
-            would never actually render — the face would stay lit-by-nothing
-            black. `emissive` gives it that base tone unconditionally, while
-            `color`/roughness still let the beacon's rim light show through
-            near the opening. */}
+    <group ref={group} position={position} scale={scale} rotation={[0, -0.25, 0]}>
+      <mesh geometry={monogram} position={[0, 0, 0]}>
         <meshStandardMaterial
-          color={WALL_COLOR}
-          emissive={WALL_COLOR}
-          emissiveIntensity={1}
-          roughness={0.87}
-          metalness={0}
+          emissive={MONOGRAM_COLOR}
+          roughness={0}
+          metalness={1}
+          fog={false}
         />
       </mesh>
-    </Center>
+
+      <mesh ref={spotlight} geometry={beam} position={[0, 0, EMBOSS_DEPTH]}>
+        <meshStandardMaterial
+          emissive={SPOTLIGHT_COLOR}
+          vertexColors
+          transparent
+          opacity={0.07}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+          toneMapped={false}
+          side={THREE.DoubleSide}
+          fog
+        />
+      </mesh>
+    </group>
   );
 }
 
 function Scene() {
   return (
     <>
-      <Wall />
-      <LightRig z={LIGHT_Z} />
-      <EffectComposer>
-        <Bloom luminanceThreshold={0.2} intensity={0.85} radius={0.65} mipmapBlur />
-        <Noise opacity={0.1} />
-        <Vignette eskil={false} offset={0.25} darkness={0.85} />
-      </EffectComposer>
+      <ambientLight intensity={0.45} />
+      <Coin />
+      <fogExp2 attach="fog" args={[SCENE_FOG_COLOR, 1]} />
     </>
   );
 }
 
-/**
- * A dark wall with an MF-shaped opening, lit only by a beacon-like source
- * behind it. The wall never moves — the camera orbits it in a
- * barely-perceptible drift, while the light itself sweeps back and forth and
- * nudges toward the pointer for a livelier parallax. Sized entirely by the
- * parent via `className` — intended to be `absolute inset-0` across the
- * whole hero so the glow can reach every edge, not boxed into its own panel.
- */
 export function HeroScene({ className }: { className?: string }) {
   const [visible, setVisible] = useState(false);
 

@@ -9,15 +9,10 @@ export function Hero() {
       id="top"
       className="relative isolate min-h-140 pt-[clamp(3rem,12vh,7rem)] pb-[clamp(4rem,10vh,7rem)] sm:min-h-155 md:flex md:min-h-170 md:items-center"
     >
-      {/* Full-bleed: the glow needs to reach every edge of the hero, not just
-          a boxed-off panel, so this sits behind everything at the section's
-          own bounds rather than inside Container. */}
       <HeroScene className="absolute inset-0" />
 
       <Container className="relative z-10 w-full">
         <div className="pt-44 sm:pt-52 md:max-w-lg md:pt-0">
-          {/* The <h1> is the LCP element: it animates first, with no delay and a
-              shorter duration than the lines that follow it. */}
           <div className="reveal-mask">
             <h1 className="reveal-lcp text-text font-serif text-[clamp(2.75rem,8.5vw,5.25rem)] leading-[0.95] tracking-[-0.03em]">
               {site.name}
