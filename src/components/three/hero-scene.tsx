@@ -32,7 +32,7 @@ const ROTATION_X_AMPLITUDE = (ROTATION_X_MAX - ROTATION_X_MIN) / 2;
 /** One oscillation cycle in ~16s. */
 const ROTATION_SPEED = Math.PI / 12;
 /** Higher = snappier cursor follow; lower = more lag. */
-const CURSOR_SMOOTH = 2.5;
+const CURSOR_SMOOTH = 3;
 
 const GEOMETRY_LAYOUT = {
   mobile: { position: [0, 22, 0] as const, scale: 0.5 },
@@ -109,7 +109,7 @@ function Geometry() {
   const reducedMotion = useRef(false);
   const pointerActive = useRef(false);
   const syncIdlePhaseOnLeave = useRef(false);
-  const idlePhase = useRef({ x: 0, y: 0 });
+  const idlePhase = useRef({ x: Math.PI / 0.5, y: Math.PI / 1.6 });
   const targetRotation = useRef({ x: ROTATION_X_CENTER, y: ROTATION_Y_CENTER });
   const currentRotation = useRef({ x: ROTATION_X_CENTER, y: ROTATION_Y_CENTER });
   const { position, scale } = useGeometryLayout();
