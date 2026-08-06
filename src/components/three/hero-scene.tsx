@@ -10,8 +10,8 @@ import {
 import type { Group } from "three";
 import * as THREE from "three";
 
-const COIN_RADIUS = 15;
-const EMBOSS_DEPTH = 0.45;
+const GEOMETRY_RADIUS = 15;
+const GEOMETRY_DEPTH = 0.45;
 const MONOGRAM_COLOR = "#f8f8f8";
 const SPOTLIGHT_COLOR = "#d8d8e0";
 
@@ -31,26 +31,28 @@ const ROTATION_X_CENTER = (ROTATION_X_MIN + ROTATION_X_MAX) / 2;
 const ROTATION_X_AMPLITUDE = (ROTATION_X_MAX - ROTATION_X_MIN) / 2;
 /** One oscillation cycle in ~16s. */
 const ROTATION_SPEED = Math.PI / 12;
+/** Higher = snappier cursor follow; lower = more lag. */
+const CURSOR_SMOOTH = 2.5;
 
-const COIN_LAYOUT = {
+const GEOMETRY_LAYOUT = {
   mobile: { position: [0, 22, 0] as const, scale: 0.5 },
   desktop: { position: [30, 0, 0] as const, scale: 1 },
 };
 const DESKTOP_BREAKPOINT = "(min-width: 768px)";
 
-function useCoinLayout(): {
+function useGeometryLayout(): {
   position: [number, number, number];
   scale: number;
 } {
   const [layout, setLayout] = useState({
-    position: [...COIN_LAYOUT.mobile.position] as [number, number, number],
-    scale: COIN_LAYOUT.mobile.scale,
+    position: [...GEOMETRY_LAYOUT.mobile.position] as [number, number, number],
+    scale: GEOMETRY_LAYOUT.mobile.scale,
   });
 
   useEffect(() => {
     const mq = window.matchMedia(DESKTOP_BREAKPOINT);
     const sync = () => {
-      const next = mq.matches ? COIN_LAYOUT.desktop : COIN_LAYOUT.mobile;
+      const next = mq.matches ? GEOMETRY_LAYOUT.desktop : GEOMETRY_LAYOUT.mobile;
       setLayout({
         position: [...next.position],
         scale: next.scale,
@@ -64,17 +66,89 @@ function useCoinLayout(): {
   return layout;
 }
 
-function Coin() {
+function pointerToRotation(clientX: number, clientY: number): { x: number; y: number } {
+  const nx = clientX / window.innerWidth - 0.5;
+  const ny = clientY / window.innerHeight - 0.5;
+  return {
+    x: ROTATION_X_CENTER + ny * 2 * ROTATION_X_AMPLITUDE,
+    y: ROTATION_Y_CENTER + nx * 2 * ROTATION_Y_AMPLITUDE,
+  };
+}
+
+/** Phase offsets so idle motion resumes from the beam's current angle. */
+function syncIdlePhase(
+  rotation: { x: number; y: number },
+  t: number,
+  phase: { x: number; y: number },
+) {
+  const nx = THREE.MathUtils.clamp(
+    (rotation.x - ROTATION_X_CENTER) / ROTATION_X_AMPLITUDE,
+    -1,
+    1,
+  );
+  const ny = THREE.MathUtils.clamp(
+    (rotation.y - ROTATION_Y_CENTER) / ROTATION_Y_AMPLITUDE,
+    -1,
+    1,
+  );
+  phase.x = Math.asin(nx) - t;
+  phase.y = Math.acos(ny) - t * 0.85;
+}
+
+function idleRotation(t: number, phase: { x: number; y: number }) {
+  return {
+    x: ROTATION_X_CENTER + ROTATION_X_AMPLITUDE * Math.sin(t + phase.x),
+    y: ROTATION_Y_CENTER + ROTATION_Y_AMPLITUDE * Math.cos(t * 0.85 + phase.y),
+  };
+}
+
+function Geometry() {
   const group = useRef<Group>(null);
   const spotlight = useRef<THREE.Mesh>(null);
 
   const reducedMotion = useRef(false);
-  const { position, scale } = useCoinLayout();
-  const monogram = useMemo(() => buildMonogramGeometry(COIN_RADIUS, EMBOSS_DEPTH), []);
-  const beam = useMemo(() => buildMonogramBeamGeometry(COIN_RADIUS, BEAM_LENGTH), []);
+  const pointerActive = useRef(false);
+  const syncIdlePhaseOnLeave = useRef(false);
+  const idlePhase = useRef({ x: 0, y: 0 });
+  const targetRotation = useRef({ x: ROTATION_X_CENTER, y: ROTATION_Y_CENTER });
+  const currentRotation = useRef({ x: ROTATION_X_CENTER, y: ROTATION_Y_CENTER });
+  const { position, scale } = useGeometryLayout();
+  const monogram = useMemo(
+    () => buildMonogramGeometry(GEOMETRY_RADIUS, GEOMETRY_DEPTH),
+    [],
+  );
+  const beam = useMemo(() => buildMonogramBeamGeometry(GEOMETRY_RADIUS, BEAM_LENGTH), []);
 
   useEffect(() => {
     reducedMotion.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }, []);
+
+  useEffect(() => {
+    const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (!fine.matches || reduced.matches) return;
+
+    const onMove = (event: PointerEvent) => {
+      pointerActive.current = true;
+      const next = pointerToRotation(event.clientX, event.clientY);
+      targetRotation.current.x = next.x;
+      targetRotation.current.y = next.y;
+    };
+
+    const onLeave = () => {
+      if (pointerActive.current) {
+        syncIdlePhaseOnLeave.current = true;
+      }
+      pointerActive.current = false;
+    };
+
+    document.addEventListener("pointermove", onMove, { passive: true });
+    document.addEventListener("pointerleave", onLeave);
+
+    return () => {
+      document.removeEventListener("pointermove", onMove);
+      document.removeEventListener("pointerleave", onLeave);
+    };
   }, []);
 
   useEffect(() => {
@@ -84,26 +158,39 @@ function Coin() {
     };
   }, [monogram, beam]);
 
-  useFrame(({ clock }) => {
+  useFrame(({ clock }, delta) => {
     if (reducedMotion.current || !spotlight.current) return;
+
     const t = clock.elapsedTime * ROTATION_SPEED;
-    spotlight.current.rotation.x = ROTATION_X_CENTER + ROTATION_X_AMPLITUDE * Math.sin(t);
-    spotlight.current.rotation.y =
-      ROTATION_Y_CENTER + ROTATION_Y_AMPLITUDE * Math.cos(t * 0.85);
+
+    if (syncIdlePhaseOnLeave.current) {
+      syncIdlePhase(currentRotation.current, t, idlePhase.current);
+      syncIdlePhaseOnLeave.current = false;
+    }
+
+    if (pointerActive.current) {
+      const blend = 1 - Math.exp(-CURSOR_SMOOTH * delta);
+      currentRotation.current.x +=
+        (targetRotation.current.x - currentRotation.current.x) * blend;
+      currentRotation.current.y +=
+        (targetRotation.current.y - currentRotation.current.y) * blend;
+    } else {
+      const idle = idleRotation(t, idlePhase.current);
+      currentRotation.current.x = idle.x;
+      currentRotation.current.y = idle.y;
+    }
+
+    spotlight.current.rotation.x = currentRotation.current.x;
+    spotlight.current.rotation.y = currentRotation.current.y;
   });
 
   return (
     <group ref={group} position={position} scale={scale} rotation={[0, -0.25, 0]}>
       <mesh geometry={monogram} position={[0, 0, 0]}>
-        <meshStandardMaterial
-          emissive={MONOGRAM_COLOR}
-          roughness={0}
-          metalness={1}
-          fog={false}
-        />
+        <meshStandardMaterial emissive={MONOGRAM_COLOR} fog={false} />
       </mesh>
 
-      <mesh ref={spotlight} geometry={beam} position={[0, 0, EMBOSS_DEPTH]}>
+      <mesh ref={spotlight} geometry={beam} position={[0, 0, GEOMETRY_DEPTH]}>
         <meshStandardMaterial
           emissive={SPOTLIGHT_COLOR}
           vertexColors
@@ -124,7 +211,7 @@ function Scene() {
   return (
     <>
       <ambientLight intensity={0.45} />
-      <Coin />
+      <Geometry />
       <fogExp2 attach="fog" args={[SCENE_FOG_COLOR, 1]} />
     </>
   );
